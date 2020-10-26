@@ -114,8 +114,32 @@ public class EksamenSBinTre<T> {
     }
 
     public int antall(T verdi) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
-    }
+
+        if(!inneholder(verdi) || tom()) {  //sjekker om treet ikke inneholder verdien og om det er tomt. Returnerter 0 viss noe av dette stemmer.
+            return 0;
+        }
+        int tall = 0;
+
+        ArrayDeque<Node<T>> kø = new ArrayDeque<>(); //lager kø som skal brukes til å travasere det binæretreet
+        kø.addLast(rot);                             //legger til rota som siste og eneste element i køen.
+
+        while (!kø.isEmpty()) {
+            Node<T> element = kø.removeFirst();      //fjerner siste element i køen
+
+            if(element.venstre != null) {
+                kø.addLast(element.venstre);         //legger til venstrebarn til elementet som ble fjernet viss det eksisterer
+            }
+
+            if(element.høyre != null) {              //samme som if-setningen over, bare for høyrebarn.
+                kø.addLast(element.høyre);
+            }
+
+            if(element.verdi == verdi) {            //sjekker om verdien til det fjerna elementet matcher verdi du leter etter. legger til 1 til return verdien viss.
+                tall++;
+            }
+        }
+        return tall;                                //returnerer antall ganger verdien oppstår.
+     }
 
     public void nullstill() {
         throw new UnsupportedOperationException("Ikke kodet ennå!");
