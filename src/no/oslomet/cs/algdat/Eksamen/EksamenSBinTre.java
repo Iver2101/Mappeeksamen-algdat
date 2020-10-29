@@ -188,7 +188,20 @@ public class EksamenSBinTre<T> {
     }
 
     public ArrayList<T> serialize() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+
+        ArrayList<T> ut = new ArrayList<>(); //arrayet som skal returners blir initialisert
+        if(tom()) return ut;
+        ArrayDeque<Node<T>> kø = new ArrayDeque<>(); //lager kø som brukes for å travarsere arrayet
+        kø.add(rot);
+        while (!kø.isEmpty()) {
+            Node<T> curr = kø.removeFirst();
+            if(curr.venstre != null) kø.add(curr.venstre);
+            if(curr.høyre != null) kø.add(curr.høyre);
+            ut.add(curr.verdi);
+        }
+        return ut;
+
+
     }
 
     static <K> EksamenSBinTre<K> deserialize(ArrayList<K> data, Comparator<? super K> c) {
