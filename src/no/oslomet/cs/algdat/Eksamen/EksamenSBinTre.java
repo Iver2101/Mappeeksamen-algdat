@@ -114,7 +114,6 @@ public class EksamenSBinTre<T> {
     }
 
     public int antall(T verdi) {
-
         if(!inneholder(verdi) || tom()) {  //sjekker om treet ikke inneholder verdien og om det er tomt. Returnerter 0 viss noe av dette stemmer.
             return 0;
         }
@@ -149,15 +148,21 @@ public class EksamenSBinTre<T> {
         Node<T> q = p;
             while (true)
             {
-                if (q.venstre != null) q = q.venstre;
-                else if (q.høyre != null) q = q.høyre;
-                else return q;
+                if (q.venstre != null) q = q.venstre;       //Looper gjennom treet helt til
+                else if (q.høyre != null) q = q.høyre;      //vi finner noden nederst til venstre.
+                else return q;                              //returnerer noden
             }
 
     }
 
     private static <T> Node<T> nestePostorden(Node<T> p) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+            if(p.forelder == null) return null;                 //returnerer null viss p er den siste i postorden
+
+        Node<T> forelder = p.forelder;
+        if(forelder.høyre == p || forelder.høyre == null) return forelder;    //returnerer foreldrenoden til p viss p er høyre barn til foreldrenoden eller enebarn.
+
+        return førstePostorden(forelder.høyre);                 //returnerer første verdi i postorden fra det høyre subtreet til foreldre noden til p
+
     }
 
     public void postorden(Oppgave<? super T> oppgave) {
