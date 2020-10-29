@@ -104,9 +104,40 @@ public class EksamenSBinTre<T> {
         return true;                             // vellykket innlegging
     }
 
-    public boolean fjern(T verdi) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
-    }
+    public boolean fjern(T verdi)  // hører til klassen SBinTre
+    {
+        if (!inneholder(verdi)) return false;  // treet har ingen nullverdier
+
+        Node<T> p = rot, q = null;   // q skal være forelder til p
+
+        while (p != null)            // leter etter verdi
+        {
+            int cmp = comp.compare(verdi,p.verdi);      // sammenligner
+            if (cmp < 0) { q = p; p = p.venstre; }      // går til venstre
+            else if (cmp > 0) { q = p; p = p.høyre; }   // går til høyre
+            else break;    // den søkte verdien ligger i p
+        }
+        if (p == null) return false;   // finner ikke verdi
+
+        if (p.venstre == null || p.høyre == null)  // Tilfelle 1) og 2)
+        {
+            Node<T> b = p.venstre != null ? p.venstre : p.høyre;  // b for barn
+            if(b != null) {
+                b.forelder = p.forelder;            //setter b sin forelder som p sin forelder viss b finnes
+            }
+
+            if (p == rot) rot = b;
+            else if (p == q.venstre) q.venstre = b;
+            else q.høyre = b;
+        }
+        else  // Tilfelle 3)
+        {
+            Node<T> s = p, r = p.høyre;   // finner neste i inorden
+
+            while (r.venstre != null) {
+                s = r;    // s er forelder til r
+                r = r.venstre;
+            }
 
     public int fjernAlle(T verdi) {
         throw new UnsupportedOperationException("Ikke kodet ennå!");
@@ -164,7 +195,7 @@ public class EksamenSBinTre<T> {
     }
 
     public void postorden(Oppgave<? super T> oppgave) {
-        Node<T> nod = førstePostorden(rot);
+        Node<T> nod = førstePostorden(rot);     //hjelpevariabelsw
         while(nod != null) {
             oppgave.utførOppgave(nod.verdi);    //Travaserer gjennom hele treet i postorden og utfører oppgave på hvert element.
             nod = nestePostorden(nod);
@@ -212,81 +243,5 @@ public class EksamenSBinTre<T> {
       return a;
 
     }
-
-
-    private class DobbeltLenketListeIterator implements Iterator<T>
-    {
-
-        private boolean fjernOK;
-        private int iteratorendringer;
-        private ArrayDeque<Node<T>> kø = new ArrayDeque<>();
-
-
-        private DobbeltLenketListeIterator(){
-            new DobbeltLenketListeIterator(rot);
-        }
-
-        private DobbeltLenketListeIterator(Node<T> p){
-            fjernOK = false;  // blir sann når next() kalles
-            iteratorendringer = endringer;  // teller endringer
-            kø.add(p);
-        }
-
-        @Override
-        public boolean hasNext(){
-            return !kø.isEmpty();
-        }
-
-        // a
-        @Override
-        public T next(){
-            if(iteratorendringer != endringer) throw new ConcurrentModificationException();
-            if(!hasNext()) throw new NoSuchElementException();
-            while (hasNext()) {
-                Node<T> denne = kø.pop();
-                if(denne.venstre == null && denne.høyre == null) {
-                    return denne.verdi;
-                } else {
-                    if (denne.høyre != null) kø.add(denne.høyre);
-                    if(denne.høyre != null) kø.add(denne.venstre);
-                }
-            }
-            return null;
-        }
-/*
-        @Override
-        public void remove(){
-            if(!fjernOK) throw new IllegalStateException();
-            if(endringer != iteratorendringer) throw new ConcurrentModificationException();
-            fjernOK = false;
-            Node<T> p;
-            if(denne == null) {p = hale;} else {p = denne.forrige;}
-            if(p == hode) {
-                if(antall == 1) {
-                    hode = null;
-                    hale = null;
-                } else {
-                    hode.neste.forrige = null;
-                    hode = hode.neste;
-                }
-            } else if(p == hale) {
-                hale.forrige.neste = null;
-                hale = hale.forrige;
-            } else {
-                p.forrige.neste = p.neste;
-                p.neste.forrige = p.forrige;
-            }
-            antall--;
-            endringer++;
-            iteratorendringer++;
-        }
-
- */
-
-    } // class DobbeltLenketListeIterator
-
-
-
-
 
 } // ObligSBinTre
