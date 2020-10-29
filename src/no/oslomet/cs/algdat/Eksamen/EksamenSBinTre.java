@@ -194,7 +194,30 @@ public class EksamenSBinTre<T> {
      }
 
     public void nullstill() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+
+        if (!tom())nullstill(rot);
+
+        rot = null;
+        antall = 0;             //setter rot til null og antall til 0 og
+        endringer++;            //legger til en endring
+    }
+
+    private void nullstill(Node<T> p)
+    {
+        int i = 0;
+        if (p.venstre != null) //sjekker om noden har venstre barn
+        {
+            nullstill(p.venstre);// venstre subtre
+            p.venstre.forelder = null; //nuller foreldrepeker til peker
+            p.venstre = null;// nuller peker
+        }
+        if (p.høyre != null)
+        {
+            nullstill(p.høyre);// høyre subtre
+            p.høyre.forelder = null;   // nuller foreldrepeker til peker
+            p.høyre = null;            // nuller peker
+        }
+        p.verdi = null; // nuller verdien
     }
 
     private static <T> Node<T> førstePostorden(Node<T> p) {
