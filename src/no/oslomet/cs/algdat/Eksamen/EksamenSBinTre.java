@@ -140,7 +140,13 @@ public class EksamenSBinTre<T> {
             }
 
     public int fjernAlle(T verdi) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if(tom()) return 0;
+        int j = antall(verdi); //finner antall ganger fjern metoden må brukes på verdien for å fjerne alle noder med den verdien
+        for(int i = 0; i < j ; i++){
+            fjern(verdi);           //fjerner første noden i postorden som har den verdien vi er ute etter
+        }
+        return j; //returnerer antall noder fjernet
+
     }
 
     public int antall(T verdi) {
