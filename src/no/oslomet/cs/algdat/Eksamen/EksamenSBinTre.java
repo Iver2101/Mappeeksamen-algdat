@@ -139,6 +139,24 @@ public class EksamenSBinTre<T> {
                 r = r.venstre;
             }
 
+            p.verdi = r.verdi;   // kopierer verdien i r til p
+
+
+            if(r.høyre != null) {
+                r.høyre.forelder = r.forelder;  //Sjekker om r har barn og flytter r sin foreldrepeker til barnet isåfall
+            } else r.forelder = null;           //Fjerner r sin foreldre referanse viss ikke
+
+
+            if (s != p) {
+                s.venstre = r.høyre;
+            } else {                        //Fjerner r
+                s.høyre = r.høyre;
+            }
+        }
+        endringer++;
+        antall--;   // det er nå én node mindre i treet
+        return true;
+    }
     public int fjernAlle(T verdi) {
         if(tom()) return 0;
         int j = antall(verdi); //finner antall ganger fjern metoden må brukes på verdien for å fjerne alle noder med den verdien
