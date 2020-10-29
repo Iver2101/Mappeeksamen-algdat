@@ -92,10 +92,8 @@ public class EksamenSBinTre<T> {
             cmp = comp.compare(verdi,p.verdi);     // bruker komparatoren
             p = cmp < 0 ? p.venstre : p.høyre;     // flytter p
         }
-
         // p er nå null, dvs. ute av treet, q er den siste vi passerte
 
-        p = new Node<>(verdi, q);                   // oppretter en ny node og legger til q som forelder.
 
         if (q == null) rot = p;                  // p blir rotnode
         else if (cmp < 0) q.venstre = p;         // venstre barn til q
@@ -166,7 +164,11 @@ public class EksamenSBinTre<T> {
     }
 
     public void postorden(Oppgave<? super T> oppgave) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        Node<T> nod = førstePostorden(rot);
+        while(nod != null) {
+            oppgave.utførOppgave(nod.verdi);    //Travaserer gjennom hele treet i postorden og utfører oppgave på hvert element.
+            nod = nestePostorden(nod);
+        }
     }
 
     public void postordenRecursive(Oppgave<? super T> oppgave) {
