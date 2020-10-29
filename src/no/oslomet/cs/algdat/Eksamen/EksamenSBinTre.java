@@ -176,7 +176,15 @@ public class EksamenSBinTre<T> {
     }
 
     private void postordenRecursive(Node<T> p, Oppgave<? super T> oppgave) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+
+        if(p == null) return; // returnerer viss p er tom
+
+        postordenRecursive(p.venstre,oppgave);    //traverserer gjennom venstre subtre til p
+
+        postordenRecursive(p.høyre, oppgave);     //traverserer gjennom høyre subtre til p
+
+        oppgave.utførOppgave(p.verdi);          //utfører oppgaven
+
     }
 
     public ArrayList<T> serialize() {
