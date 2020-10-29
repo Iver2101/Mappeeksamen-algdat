@@ -113,23 +113,22 @@ public class EksamenSBinTre<T> {
     }
 
     public int antall(T verdi) {
-        if(!inneholder(verdi) || tom()) {  //sjekker om treet ikke inneholder verdien og om det er tomt. Returnerter 0 viss noe av dette stemmer.
+        if(tom() || !inneholder(verdi)) {  //sjekker om treet ikke inneholder verdien og om det er tomt. Returnerter 0 viss noe av dette stemmer.
             return 0;
         }
+
         int tall = 0;
+        Node<T> p = rot;
+        int cmp;
+        while (p != null) {
+            cmp = comp.compare(verdi,p.verdi);
 
-        ArrayDeque<Node<T>> kø = new ArrayDeque<>(); //lager kø som skal brukes til å travasere det binæretreet
-        kø.addLast(rot);                             //legger til rota som siste og eneste element i køen.
+            if(cmp == 0) tall++;//legger en til returverdien viss p = verdi
 
-        while (!kø.isEmpty()) {
-            Node<T> element = kø.removeFirst();      //fjerner siste element i køen
-
-            if(element.venstre != null) {
-                kø.addLast(element.venstre);         //legger til venstrebarn til elementet som ble fjernet viss det eksisterer
-            }
-
-            if(element.høyre != null) {              //samme som if-setningen over, bare for høyrebarn.
-                kø.addLast(element.høyre);
+            if(cmp < 0) {
+                p = p.venstre;      //flytter p mot venstre viss p sin verdi er mindre enn verdi
+            } else {
+                p = p.høyre;      //flytter p mot høyre viss p sin verdi er lik eller mer enn verdi
             }
 
             if(element.verdi == verdi) {            //sjekker om verdien til det fjerna elementet matcher verdi du leter etter. legger til 1 til return verdien viss.
@@ -184,7 +183,7 @@ public class EksamenSBinTre<T> {
 
         postordenRecursive(p.høyre, oppgave);     //traverserer gjennom høyre subtre til p
 
-        oppgave.utførOppgave(p.verdi);          //utfører oppgaven
+        oppgave.utførOppgave(p.verdi);          //utfører oppgaven på p
 
     }
 
@@ -206,8 +205,88 @@ public class EksamenSBinTre<T> {
     }
 
     static <K> EksamenSBinTre<K> deserialize(ArrayList<K> data, Comparator<? super K> c) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        EksamenSBinTre<K> a = new EksamenSBinTre<>(c);
+        while(data.size() > 0) {
+            a.leggInn(data.remove(0));
+        }
+      return a;
+
     }
+
+
+    private class DobbeltLenketListeIterator implements Iterator<T>
+    {
+
+        private boolean fjernOK;
+        private int iteratorendringer;
+        private ArrayDeque<Node<T>> kø = new ArrayDeque<>();
+
+
+        private DobbeltLenketListeIterator(){
+            new DobbeltLenketListeIterator(rot);
+        }
+
+        private DobbeltLenketListeIterator(Node<T> p){
+            fjernOK = false;  // blir sann når next() kalles
+            iteratorendringer = endringer;  // teller endringer
+            kø.add(p);
+        }
+
+        @Override
+        public boolean hasNext(){
+            return !kø.isEmpty();
+        }
+
+        // a
+        @Override
+        public T next(){
+            if(iteratorendringer != endringer) throw new ConcurrentModificationException();
+            if(!hasNext()) throw new NoSuchElementException();
+            while (hasNext()) {
+                Node<T> denne = kø.pop();
+                if(denne.venstre == null && denne.høyre == null) {
+                    return denne.verdi;
+                } else {
+                    if (denne.høyre != null) kø.add(denne.høyre);
+                    if(denne.høyre != null) kø.add(denne.venstre);
+                }
+            }
+            return null;
+        }
+/*
+        @Override
+        public void remove(){
+            if(!fjernOK) throw new IllegalStateException();
+            if(endringer != iteratorendringer) throw new ConcurrentModificationException();
+            fjernOK = false;
+            Node<T> p;
+            if(denne == null) {p = hale;} else {p = denne.forrige;}
+            if(p == hode) {
+                if(antall == 1) {
+                    hode = null;
+                    hale = null;
+                } else {
+                    hode.neste.forrige = null;
+                    hode = hode.neste;
+                }
+            } else if(p == hale) {
+                hale.forrige.neste = null;
+                hale = hale.forrige;
+            } else {
+                p.forrige.neste = p.neste;
+                p.neste.forrige = p.forrige;
+            }
+            antall--;
+            endringer++;
+            iteratorendringer++;
+        }
+
+ */
+
+    } // class DobbeltLenketListeIterator
+
+
+
 
 
 } // ObligSBinTre
