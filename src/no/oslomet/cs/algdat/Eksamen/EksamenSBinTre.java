@@ -186,9 +186,6 @@ public class EksamenSBinTre<T> {
                 p = p.høyre;      //flytter p mot høyre viss p sin verdi er lik eller mer enn verdi
             }
 
-            if(element.verdi == verdi) {            //sjekker om verdien til det fjerna elementet matcher verdi du leter etter. legger til 1 til return verdien viss.
-                tall++;
-            }
         }
         return tall;                                //returnerer antall ganger verdien oppstår.
      }
