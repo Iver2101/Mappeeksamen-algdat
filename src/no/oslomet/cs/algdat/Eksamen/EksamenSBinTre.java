@@ -281,8 +281,8 @@ public class EksamenSBinTre<T> {
 
     static <K> EksamenSBinTre<K> deserialize(ArrayList<K> data, Comparator<? super K> c) {
         EksamenSBinTre<K> a = new EksamenSBinTre<>(c);
-        while(data.size() > 0) {
-            a.leggInn(data.remove(0));
+        for(int i= 0; data.size() > i; i++) {
+            a.leggInn(data.get(i));
         }
       return a;
 
