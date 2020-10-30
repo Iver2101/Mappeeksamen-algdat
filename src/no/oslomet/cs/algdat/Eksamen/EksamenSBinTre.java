@@ -124,7 +124,7 @@ public class EksamenSBinTre<T> {
             Node<T> b = p.venstre != null ? p.venstre : p.høyre;  // b for barn
             if(b != null) {
                 b.forelder = p.forelder;            //setter b sin forelder som p sin forelder viss b finnes
-            }
+            } else p.forelder = null;
 
             if (p == rot) rot = b;
             else if (p == q.venstre) q.venstre = b;
@@ -159,11 +159,11 @@ public class EksamenSBinTre<T> {
     }
     public int fjernAlle(T verdi) {
         if(tom()) return 0;
-        int j = antall(verdi); //finner antall ganger fjern metoden må brukes på verdien for å fjerne alle noder med den verdien
-        for(int i = 0; i < j ; i++){
-            fjern(verdi);           //fjerner første noden i postorden som har den verdien vi er ute etter
+        int antall = 0; //antall som blir fjernet
+        while (fjern(verdi)) {//fjerner tall og legger til en til antall
+            antall++;
         }
-        return j; //returnerer antall noder fjernet
+        return antall; //returnerer antall noder fjernet
 
     }
 
@@ -192,8 +192,8 @@ public class EksamenSBinTre<T> {
 
     public void nullstill() {
 
-        if (!tom())nullstill(rot);
-
+        if (tom()) return;
+        nullstill(rot);
         rot = null;
         antall = 0;             //setter rot til null og antall til 0 og
         endringer++;            //legger til en endring
